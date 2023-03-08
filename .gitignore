@@ -1,2 +1,5 @@
 /js-server/node_modules/
 .idea
+/js-server/package-lock.json
+/webapp/node_modules/
+/webapp/package-lock.json
