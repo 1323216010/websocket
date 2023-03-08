@@ -1,6 +1,6 @@
 import { WebSocketServer } from 'ws';
 
-const wss = new WebSocketServer({ port: 2020 });
+const wss = new WebSocketServer({ port: 2021 });
 
 wss.on('connection', function connection(ws) {
   ws.on('error', console.error);
