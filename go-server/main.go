@@ -16,15 +16,18 @@ var upgrader = websocket.Upgrader{
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		conn, _ := upgrader.Upgrade(w, r, nil)
+		ws, _ := upgrader.Upgrade(w, r, nil)
+		defer ws.Close()
 
-		msgType, msg, err := conn.ReadMessage()
-		if err != nil {
-			return
-		}
+		for {
+			msgType, msg, err := ws.ReadMessage()
+			if err != nil {
+				return
+			}
 
-		if err = conn.WriteMessage(msgType, msg); err != nil {
-			return
+			if err = ws.WriteMessage(msgType, msg); err != nil {
+				return
+			}
 		}
 	})
 
