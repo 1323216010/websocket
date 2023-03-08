@@ -1,20 +1,18 @@
 <script setup>
-import { ref } from 'vue'
+import { reactive } from 'vue'
 
-const str = ref("")
+const arr = reactive([])
 
 const ws = new WebSocket('ws://localhost:2020');
 console.log(ws)
 
 ws.onopen = (e) => {
-  console.log('e: ', e);
-  console.log('连接成功');
+  ws.send("233")
 }
 
 ws.onmessage = e => {
-  console.log('e: ', e);
-  console.log('e.data: ', e.data);
-  str.value = e.data
+  arr.push(e.data)
+  console.log(arr)
 }
 
 ws.close = e => {
@@ -24,7 +22,7 @@ ws.close = e => {
 </script>
 
 <template>
-  <h1>{{ str }}</h1>
+  <p style="text-align:center">{{ arr }}</p>
 </template>
 
 <style scoped>
