@@ -20,7 +20,7 @@ var server = app.listen(8081, function () {
     console.log("访问端口为%s", port)
 })
 
-const wss = new WebSocketServer({ port: 8080 });
+const wss = new WebSocketServer({ port: 2020 });
 
 wss.on('connection', function connection(ws) {
   ws.on('error', console.error);

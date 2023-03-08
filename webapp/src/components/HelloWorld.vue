@@ -1,36 +1,30 @@
 <script setup>
 import { ref } from 'vue'
 
-defineProps({
-  msg: String,
-})
+const str = ref("")
 
-const count = ref(0)
+const ws = new WebSocket('ws://localhost:2020');
+console.log(ws)
+
+ws.onopen = (e) => {
+  console.log('e: ', e);
+  console.log('连接成功');
+}
+
+ws.onmessage = e => {
+  console.log('e: ', e);
+  console.log('e.data: ', e.data);
+  str.value = e.data
+}
+
+ws.close = e => {
+  console.log('关闭连接');
+}
+
 </script>
 
 <template>
-  <h1>{{ msg }}</h1>
-
-  <div class="card">
-    <button type="button" @click="count++">count is {{ count }}</button>
-    <p>
-      Edit
-      <code>components/HelloWorld.vue</code> to test HMR
-    </p>
-  </div>
-
-  <p>
-    Check out
-    <a href="https://vuejs.org/guide/quick-start.html#local" target="_blank"
-      >create-vue</a
-    >, the official Vue + Vite starter
-  </p>
-  <p>
-    Install
-    <a href="https://github.com/vuejs/language-tools" target="_blank">Volar</a>
-    in your IDE for a better DX
-  </p>
-  <p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
+  <h1>{{ str }}</h1>
 </template>
 
 <style scoped>
