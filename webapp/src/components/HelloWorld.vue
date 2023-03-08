@@ -3,7 +3,7 @@ import { reactive } from 'vue'
 
 const arr = reactive([])
 
-const ws = new WebSocket('ws://localhost:2020');
+const ws = new WebSocket('ws://localhost:2021');
 console.log(ws)
 
 ws.onopen = (e) => {
@@ -12,7 +12,7 @@ ws.onopen = (e) => {
 
 ws.onmessage = e => {
   arr.push(e.data)
-  console.log(arr)
+  console.log(e)
 }
 
 ws.close = e => {
@@ -26,7 +26,4 @@ ws.close = e => {
 </template>
 
 <style scoped>
-.read-the-docs {
-  color: #888;
-}
 </style>

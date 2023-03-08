@@ -1,33 +1,32 @@
 package main
 
 import (
-	"encoding/json"
-	"github.com/gin-gonic/gin"
-	"os"
-	"path/filepath"
+	"net/http"
+
+	"github.com/gorilla/websocket"
 )
 
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
+
 func main() {
-	sep := string(os.PathSeparator)
-	path, _ := filepath.Abs("..")
-	path = path + sep + "go-server" + sep + "json" + sep + "poet300.json"
-	data, _ := os.ReadFile(path)
-	var m []map[string]interface{}
-	_ = json.Unmarshal(data, &m)
-	/*	fmt.Println(reflect.TypeOf(data))
-		fmt.Println(path)*/
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		conn, _ := upgrader.Upgrade(w, r, nil)
 
-	r := gin.Default()
-
-	r.GET("/poet", func(c *gin.Context) {
-		var poet []map[string]interface{}
-		for i := 0; i < len(m); i++ {
-			if m[i]["author"] == c.Query("author") {
-				poet = append(poet, m[i])
-			}
+		msgType, msg, err := conn.ReadMessage()
+		if err != nil {
+			return
 		}
-		c.JSON(200, poet)
+
+		if err = conn.WriteMessage(msgType, msg); err != nil {
+			return
+		}
 	})
 
-	r.Run(":8082")
+	http.ListenAndServe(":2021", nil)
 }
