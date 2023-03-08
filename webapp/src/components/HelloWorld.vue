@@ -4,7 +4,7 @@ import { ref, reactive } from 'vue'
 const input = ref('')
 const arr = reactive([])
 
-const ws = new WebSocket('ws://localhost:2023');
+const ws = new WebSocket('ws://localhost:2024');
 console.log(ws)
 
 ws.onopen = (e) => {
