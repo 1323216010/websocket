@@ -2,7 +2,9 @@ package main
 
 import (
 	"encoding/json"
+	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/websocket"
 )
@@ -17,12 +19,14 @@ var upgrader = websocket.Upgrader{
 
 func main() {
 	var wsList []*websocket.Conn
+	i := 0
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		ws, _ := upgrader.Upgrade(w, r, nil)
 		wsList = append(wsList, ws)
 
 		messageType, bt, _ := wsList[0].ReadMessage()
-		_ = wsList[0].WriteMessage(messageType, bt)
+		_ = wsList[i].WriteMessage(messageType, bt)
+		i++
 	})
 
 	http.HandleFunc("/send", func(w http.ResponseWriter, r *http.Request) {
@@ -31,5 +35,16 @@ func main() {
 		_ = wsList[0].WriteMessage(1, bt)
 	})
 
-	http.ListenAndServe(":2021", nil)
+	go http.ListenAndServe(":2021", nil)
+
+	r := gin.Default()
+
+	r.GET("/send", func(c *gin.Context) {
+		str := c.Query("msg")
+		bt, _ := json.Marshal(str)
+		id, _ := strconv.Atoi(c.Query("id"))
+		_ = wsList[id].WriteMessage(1, bt)
+	})
+
+	r.Run(":8082")
 }
