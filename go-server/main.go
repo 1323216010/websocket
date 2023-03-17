@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -15,21 +16,20 @@ var upgrader = websocket.Upgrader{
 }
 
 func main() {
+	var wsList []*websocket.Conn
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		ws, _ := upgrader.Upgrade(w, r, nil)
-		defer ws.Close()
+		wsList = append(wsList, ws)
 
-		for {
-			msgType, msg, err := ws.ReadMessage()
-			if err != nil {
-				return
-			}
-
-			if err = ws.WriteMessage(msgType, msg); err != nil {
-				return
-			}
-		}
+		messageType, bt, _ := wsList[0].ReadMessage()
+		_ = wsList[0].WriteMessage(messageType, bt)
 	})
 
-	http.ListenAndServe(":2022", nil)
+	http.HandleFunc("/send", func(w http.ResponseWriter, r *http.Request) {
+		str := "消息"
+		bt, _ := json.Marshal(str)
+		_ = wsList[0].WriteMessage(1, bt)
+	})
+
+	http.ListenAndServe(":2021", nil)
 }
