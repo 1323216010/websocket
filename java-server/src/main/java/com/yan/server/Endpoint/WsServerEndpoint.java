@@ -8,6 +8,8 @@ import jakarta.websocket.server.ServerEndpoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author yan
@@ -15,7 +17,9 @@ import java.io.IOException;
 @ServerEndpoint("/")
 @Component
 public class WsServerEndpoint {
+    private Session session;
 
+    public static List<Session> wsCoon = new ArrayList<Session>();
     /**
      * 连接成功
      *
@@ -23,7 +27,8 @@ public class WsServerEndpoint {
      */
     @OnOpen
     public void onOpen(Session session) {
-        System.out.println("连接成功");
+        this.session = session;
+        wsCoon.add(session);
     }
 
     /**
