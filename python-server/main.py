@@ -11,6 +11,7 @@ async def echo(websocket):
     msg = await websocket.recv()
     await websocket.send(msg)
     list.append(websocket)
+    print(list[:])
 
 async def ws(list):
     async with websockets.serve(echo, "localhost", 2021):
